@@ -1,5 +1,8 @@
 // import the express application and type definition
 import express, { Express } from "express";
+import { calculatePortfolioPerformance } from "./portfolio/portfolioPerformance";
+import { findLargestHolding } from "./portfolio/portfolioPerformance";
+import { calculateAssetAllocation } from "./portfolio/portfolioPerformance";
 
 // initialize the express application
 const app: Express = express();
@@ -32,10 +35,50 @@ app.get("/api/v1/health", (req, res) => {
     res.json(healthData);
 });
 
-// respond to GET request at endpoint "/" with message
-app.get("/", (req, res) => {
-    res.send("Hello, world!");
+/**
+ * Portfolio performance endpoint
+ */
+app.get("/api/v1/portfolio/performance", (req, res) => {
+  try {
+    const result = calculatePortfolioPerformance(10000, 12000); 
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Error calculating performance" });
+  }
 });
+
+/**
+ * Largest holding endpoint
+ */
+app.get("/api/v1/portfolio/largest-holding", (req, res) => {
+  try {
+    const assets = [
+      { name: "APPLE", value: 5000 },
+      { name: "GOOGLE", value: 7000 },
+    ];
+    const result = findLargestHolding(assets);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching largest holding" });
+  }
+});
+
+/**
+ * Asset allocation endpoint
+ */
+app.get("/api/v1/portfolio/allocation", (req, res) => {
+  try {
+    const assets = [
+      { name: "APPLE", value: 5000 },
+      { name: "GOOGLE", value: 7000 },
+    ];
+    const result = calculateAssetAllocation(assets);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Error calculating allocation" });
+  }
+});
+
 
 // export app and server for testing
 export default app;
