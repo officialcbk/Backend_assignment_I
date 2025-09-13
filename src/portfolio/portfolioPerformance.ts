@@ -29,3 +29,30 @@ export function calculatePortfolioPerformance(initialInvestment: number, current
         performanceSummary,
     };
 }
+
+interface Asset {
+    name: string;
+    value: number;
+}
+
+export function findLargestHolding(assets: Asset[]): Asset | undefined {
+    if (assets.length === 0) {
+        return undefined;
+    }
+
+    return assets.reduce((largest, current) => {
+        return current.value > largest.value ? current : largest;
+    });
+}
+
+export function calculateAssetAllocation(assets: Asset[]): Record<string, number> {
+    const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+
+    const allocation: Record<string, number> = {};
+
+    assets.forEach((asset) => {
+        allocation[asset.name] = (asset.value / totalValue) * 100;
+    });
+
+    return allocation;
+}
